@@ -1,11 +1,11 @@
 
-from finanzas.src.excepciones import MontoNegativoError, TipoTransaccionInvalidaError, SaldoInsuficienteError
-from finanzas.src.database import insertar_transaccion, obtener_transacciones
+from src.excepciones import MontoNegativoError, TipoTransaccionInvalidaError, SaldoInsuficienteError
+from src.database import insertar_transaccion, obtener_transacciones
 
 
 class GestorFinanzas:
-    def __init__(self):
-        pass
+    def __init__(self, db='finanzas.db'):
+        self.db = db
 
     def agregar_ingreso(self, monto, descripcion):
         if monto <= 0:
@@ -14,7 +14,7 @@ class GestorFinanzas:
         if not descripcion:
             raise TipoTransaccionInvalidaError("La descripción no puede estar vacía.")
         
-        insertar_transaccion("ingreso", descripcion, monto)
+        insertar_transaccion(tipo="ingreso", descripcion=descripcion, monto=monto, db=self.db)
 
     def agregar_gasto(self, monto, descripcion):
         if monto <= 0:
@@ -26,11 +26,11 @@ class GestorFinanzas:
         if not descripcion:
             raise TipoTransaccionInvalidaError("La descripción no puede estar vacía.")
         
-        insertar_transaccion("gasto", descripcion, monto)
+        insertar_transaccion(tipo="gasto", descripcion=descripcion, monto=monto, db=self.db)
     
     #una funcion que suma ingresos, resta gastos, retorna el resultado
     def obtener_balance(self):
-        transacciones = obtener_transacciones()
+        transacciones = obtener_transacciones(db=self.db)
         balance = 0.0
         for transaccion in transacciones:
             if transaccion[2] == "ingreso":
@@ -40,4 +40,4 @@ class GestorFinanzas:
         return balance
     
     def obtener_transacciones(self):
-        return obtener_transacciones()
+        return obtener_transacciones(db=self.db)

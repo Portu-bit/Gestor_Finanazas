@@ -1,6 +1,6 @@
 #exportar las transacciones a un archivo csv, con el formato fecha, tipo, monto, categoria y descripcion
 import csv
-from finanzas.src.database import obtener_transacciones
+from src.database import obtener_transacciones
 
 def exportar_csv(nombre_archivo):
     transacciones = obtener_transacciones()
