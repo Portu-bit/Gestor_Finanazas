@@ -1,11 +1,11 @@
-# crear una funcion que cree la tabla "transacciopnes" en la base de datos "finanzas.db" con los siguientes campos: id, fecha, tipo, monto y descripcion
 import sqlite3
 from datetime import datetime
 
-def crear_tabla_transacciones(db = 'finanzas.db'):
+
+def crear_tabla_transacciones(db='finanzas.db'):
+    """Create the transactions table without deleting existing records."""
     with sqlite3.connect(db) as conn:
         cursor = conn.cursor()
-        cursor.execute('DROP TABLE IF EXISTS transacciones')
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS transacciones (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -16,8 +16,10 @@ def crear_tabla_transacciones(db = 'finanzas.db'):
             )
         ''')
 
+
 def insertar_transaccion(tipo, descripcion, monto, db='finanzas.db'):
     fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
     with sqlite3.connect(db) as conn:
         cursor = conn.cursor()
         cursor.execute('''
@@ -25,9 +27,9 @@ def insertar_transaccion(tipo, descripcion, monto, db='finanzas.db'):
             VALUES (?, ?, ?, ?)
         ''', (fecha, tipo, monto, descripcion))
 
-def obtener_transacciones(db = 'finanzas.db'):
+
+def obtener_transacciones(db='finanzas.db'):
     with sqlite3.connect(db) as conn:
         cursor = conn.cursor()
-        cursor.execute('SELECT * FROM transacciones')
-        transacciones = cursor.fetchall()
-    return transacciones
+        cursor.execute('SELECT * FROM transacciones ORDER BY id')
+        return cursor.fetchall()
